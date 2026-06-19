@@ -38,3 +38,41 @@ func CreateUser(
 
 	return result.LastInsertId()
 }
+
+func GetUserByEmail(email string) (*User, string, error) {
+
+	query := `
+	SELECT
+		id,
+		tenant_id,
+		first_name,
+		last_name,
+		email,
+		status,
+		password
+	FROM users
+	WHERE email = ?
+	`
+
+	var user User
+	var password string
+
+	err := database.DB.QueryRow(
+		query,
+		email,
+	).Scan(
+		&user.ID,
+		&user.TenantID,
+		&user.FirstName,
+		&user.LastName,
+		&user.Email,
+		&user.Status,
+		&password,
+	)
+
+	if err != nil {
+		return nil, "", err
+	}
+
+	return &user, password, nil
+}
