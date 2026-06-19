@@ -7,6 +7,7 @@ import (
 	"github.com/sumitdhamane/saas-platform/configs"
 	"github.com/sumitdhamane/saas-platform/internal/database"
 	"github.com/sumitdhamane/saas-platform/internal/tenant"
+	"github.com/sumitdhamane/saas-platform/internal/user"
 )
 
 func main() {
@@ -26,6 +27,8 @@ func main() {
 	})
 
 	app.Post("/tenants", tenant.CreateTenantHandler)
+
+	app.Post("/users", user.CreateUserHandler)
 
 	log.Fatal(app.Listen(":" + cfg.AppPort))
 
