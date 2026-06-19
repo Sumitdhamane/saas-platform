@@ -3,20 +3,22 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/sumitdhamane/saas-platform/configs"
 )
 
 var DB *sql.DB
 
-func Connect() error {
+func Connect(cfg *configs.Config) error {
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		"root",
-		"root",
-		"localhost",
-		"3306",
-		"saas_platform",
+		cfg.DBUser,
+		cfg.DBPass,
+		cfg.DBHost,
+		cfg.DBPort,
+		cfg.DBName,
 	)
 
 	db, err := sql.Open("mysql", dsn)
@@ -24,11 +26,18 @@ func Connect() error {
 		return err
 	}
 
-	if err := db.Ping(); err != nil {
+	// Connection Pool
+	db.SetMaxOpenConns(25)
+	db.SetMaxIdleConns(10)
+
+	err = db.Ping()
+	if err != nil {
 		return err
 	}
 
 	DB = db
+
+	log.Println("✅ MySQL Connected")
 
 	return nil
 }
