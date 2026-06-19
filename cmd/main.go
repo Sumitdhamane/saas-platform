@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/sumitdhamane/saas-platform/configs"
 	"github.com/sumitdhamane/saas-platform/internal/database"
+	"github.com/sumitdhamane/saas-platform/internal/tenant"
 )
 
 func main() {
@@ -24,5 +25,8 @@ func main() {
 		})
 	})
 
+	app.Post("/tenants", tenant.CreateTenantHandler)
+
 	log.Fatal(app.Listen(":" + cfg.AppPort))
+
 }
